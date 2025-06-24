@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 class ProductPage extends Component
 {
@@ -14,11 +15,18 @@ class ProductPage extends Component
 
     public function mount()
     {
+        $akun = Auth::guard('akun')->user();
+
+        if (!$akun) {
+            session()->flash('error', 'Silakan login terlebih dahulu untuk mengecek status.');
+            return redirect()->route('akun.login');
+        }
+
         $this->loadProducts();
     }
 
     public function loadProducts()
-    {
+    git{
         $this->products = Product::all();
     }
 

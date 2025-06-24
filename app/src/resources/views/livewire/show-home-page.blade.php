@@ -28,7 +28,7 @@
                             Platform ini tidak bergantung pada integrasi API pembayaran eksternal yang kompleks.
                             Sebaliknya, data pembayaran pelanggan dapat diunggah dan diverifikasi secara manual oleh
                             admin dengan sistem pencatatan yang terstruktur, memungkinkan fleksibilitas dalam metode
-                            pembayaran seperti transfer bank, e-wallet, atau QRIS.
+                            pembayaran melalui QRIS.
                             <br><br>
                             TeamAnuBot dibangun dengan teknologi web modern seperti Laravel 12, Filament v3, dan Docker,
                             serta memanfaatkan LINE Messaging API sebagai antarmuka utama kepada pelanggan. Antarmuka
