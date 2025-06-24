@@ -1,3 +1,7 @@
+@section('nav')
+    @include('components.partials.nav-akun')
+@endsection
+
 <div x-data="{ showPassword: false, showConfirmPassword: false }"
     :style="{
         '--bg-color': '#ffffff',

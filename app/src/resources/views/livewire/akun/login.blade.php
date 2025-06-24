@@ -1,3 +1,7 @@
+@section('nav')
+    @include('components.partials.nav-akun')
+@endsection
+
 <div
     :style="{
         '--bg-color': '#ffffff',
