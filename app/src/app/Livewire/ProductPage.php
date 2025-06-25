@@ -26,7 +26,7 @@ class ProductPage extends Component
     }
 
     public function loadProducts()
-    git{
+    {
         $this->products = Product::all();
     }
 

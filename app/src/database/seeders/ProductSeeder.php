@@ -17,12 +17,14 @@ class ProductSeeder extends Seeder
             'name' => 'Selfbot',
             'description' => 'A premium selfbot for LINE with advanced features.',
             'price' => 50000,
+            'order' => 1,
         ]);
 
         Product::create([
             'name' => 'Official Bot',
             'description' => 'Subscription for the official LINE bot service.',
             'price' => 100000,
+            'order' => 2,
         ]);
     }
 }
