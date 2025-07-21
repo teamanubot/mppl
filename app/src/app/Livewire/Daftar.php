@@ -14,12 +14,11 @@ class Daftar extends Component
 
     public $name;
     public $whatsapp_number;
-    public $subscription_type;
+    public $subscription_type = '';
     public $payment_proof;
     public $price;
     public $showPopup = false;
     public $popupData = [];
-    public $namaSudahAda = false;
 
     public function mount()
     {
@@ -56,14 +55,6 @@ class Daftar extends Component
             return redirect()->route('akun.login');
         }
 
-        // Cek apakah nama sudah digunakan oleh status lain
-        $namaSudahDigunakan = Status::where('nama', $this->name)->exists();
-
-        if ($namaSudahDigunakan) {
-            $this->namaSudahAda = true;
-            return;
-        }
-
         // Simpan file bukti pembayaran
         $path = $this->payment_proof->store('payment_proofs', 'public');
 
@@ -94,6 +85,7 @@ class Daftar extends Component
         $this->resetExcept('name', 'whatsapp_number', 'showPopup', 'popupData');
         $this->resetValidation();
     }
+
 
     public function render()
     {

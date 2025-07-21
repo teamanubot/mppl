@@ -12,12 +12,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\Action;
+use App\Exports\PenyewaBotExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataPenyewaBotResource extends Resource
 {
     protected static ?string $model = DataPenyewaBot::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    
+    protected static ?string $navigationGroup = 'Manajemen Bot';
 
     public static function form(Form $form): Form
     {
@@ -36,7 +39,7 @@ class DataPenyewaBotResource extends Resource
                     ])
                     ->required(),
                 Forms\Components\TextInput::make('nama')
-                    ->label('Nama Verifikasi')
+                    ->label('Nama Penyewa Bot')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DateTimePicker::make('waktu_beli'),
@@ -54,7 +57,9 @@ class DataPenyewaBotResource extends Resource
                 Tables\Columns\TextColumn::make('akun.name')
                     ->label('Nama Akun')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('nama')->label('Nama Verifikasi'),
+                Tables\Columns\TextColumn::make('nama')
+                    ->label('Nama Penyewa Bot')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('jenisbot'),
                 Tables\Columns\TextColumn::make('waktu_beli')
                     ->dateTime()
@@ -79,6 +84,12 @@ class DataPenyewaBotResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+            ])
+            ->headerActions([
+                Action::make('Export Excel')
+                    ->action(function () {
+                        return Excel::download(new PenyewaBotExport, 'Data Penyewa Bot - TeamAnuBot.xlsx');
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

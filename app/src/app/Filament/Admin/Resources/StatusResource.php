@@ -17,7 +17,7 @@ class StatusResource extends Resource
 {
     protected static ?string $model = Status::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Manajemen Bot';
 
     public static function form(Form $form): Form
     {
@@ -28,10 +28,11 @@ class StatusResource extends Resource
                     ->label('Nama Akun')
                     ->searchable()
                     ->required(),
+
                 Forms\Components\TextInput::make('nama')
-                    ->label('Nama Verifikasi')
-                    ->required()
-                    ->maxLength(255),
+                    ->label('Nama Penyewa Bot')
+                    ->required(),
+
                 Forms\Components\Select::make('subscription_type')
                     ->label('Jenis Langganan')
                     ->options([
@@ -49,7 +50,6 @@ class StatusResource extends Resource
                     ->required(),
                 Forms\Components\FileUpload::make('payment_proof')
                     ->image()
-                    ->disk('public')
                     ->required(),
                 Forms\Components\TextInput::make('price')
                     ->required()
@@ -67,17 +67,21 @@ class StatusResource extends Resource
                     ->label('Nama Akun')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama')
-                    ->label('Nama Verifikasi'),
+                    ->label('Nama Penyewa Bot')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('akun.whatsapp_number')
                     ->label('No. WhatsApp')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('subscription_type'),
-                Tables\Columns\TextColumn::make('payment_status'),
-                Tables\Columns\TextColumn::make('payment_proof')
+                Tables\Columns\TextColumn::make('payment_status')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('payment_proof')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->height(80),
                 Tables\Columns\TextColumn::make('price')
                     ->sortable()
-                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 2, ',', '.')),
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 2, ',', '.')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

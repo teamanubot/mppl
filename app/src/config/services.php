@@ -35,4 +35,7 @@ return [
         ],
     ],
 
+    'whatsapp_api_url' => env('WHATSAPP_API_URL'),
+    'whatsapp_api_key_header' => env('API_KEY_HEADER_NAME', 'x-whatsapp-token'),
+    'whatsapp_api_key' => env('API_KEY'),
 ];

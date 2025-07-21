@@ -53,6 +53,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 NavigationGroup::make()
+                    ->label('Produk')
+                    ->icon('heroicon-o-shopping-bag'),
+
+                NavigationGroup::make()
+                    ->label('Manajemen Bot')
+                    ->icon('heroicon-o-cpu-chip'),
+                    
+                NavigationGroup::make()
                     ->label('Administration'),
             ])
             ->userMenuItems([

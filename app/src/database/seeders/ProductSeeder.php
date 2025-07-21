@@ -2,29 +2,41 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\Status;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Product::create([
-            'name' => 'Selfbot',
-            'description' => 'A premium selfbot for LINE with advanced features.',
-            'price' => 50000,
-            'order' => 1,
-        ]);
+        // Daftar produk
+        $products = [
+            [
+                'name' => 'Selfbot',
+                'description' => 'A premium selfbot for LINE with advanced features.',
+                'price' => 50000,
+            ],
+            [
+                'name' => 'Official Bot',
+                'description' => 'Subscription for the official LINE bot service.',
+                'price' => 100000,
+            ],
+        ];
 
-        Product::create([
-            'name' => 'Official Bot',
-            'description' => 'Subscription for the official LINE bot service.',
-            'price' => 100000,
-            'order' => 2,
-        ]);
+        // Loop & buat produk
+        foreach ($products as $data) {
+            // Hitung berapa status yang pakai subscription_type = nama produk
+            $orderCount = Status::where('subscription_type', $data['name'])->count();
+
+            Product::updateOrCreate(
+                ['name' => $data['name']],
+                [
+                    'description' => $data['description'],
+                    'price' => $data['price'],
+                    'order' => $orderCount,
+                ]
+            );
+        }
     }
 }

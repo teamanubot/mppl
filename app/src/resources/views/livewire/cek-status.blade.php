@@ -22,59 +22,69 @@
                 <div class="alert alert-danger">{{ $error }}</div>
             @endif
 
-            {{-- Form pencarian --}}
-            <form wire:submit.prevent="cek">
-                <div class="mb-3">
-                    <label for="search" class="form-label">Masukkan ID atau Nama</label>
-                    <input type="text" class="form-control" id="search" wire:model="search"
-                        placeholder="Masukkan ID atau Nama">
-                </div>
-                <button type="submit" class="btn btn-primary">Cek Status</button>
-            </form>
-
             {{-- Hasil pencarian --}}
-            @if ($status)
+            @if ($error)
+                <div class="alert alert-danger">{{ $error }}</div>
+            @endif
+
+            @if (count($statuses) > 0)
                 <hr>
-                <h3>Hasil Pencarian untuk:
-                    {{ $status->nama }} (ID: {{ $status->id }})
-                </h3>
+                <h3>Daftar Status Langganan Anda:</h3>
 
-                <ul class="list-group mt-3">
-                    <li class="list-group-item">
-                        <strong>Nama:</strong> {{ $status->nama }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Status Pembayaran:</strong>
-                        @if ($status->payment_status === 'pending')
-                            <span class="badge-status badge-pending">Pending</span>
-                        @elseif ($status->payment_status === 'approved')
-                            <span class="badge-status badge-approved">Approved</span>
-                        @else
-                            <span class="badge-status badge-rejected">Rejected</span>
-                        @endif
-                    </li>
+                @foreach ($statuses as $status)
+                    <div class="card my-4">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $status->nama }} (ID: {{ $status->id }})</h5>
 
-                    @if ($status->payment_status === 'approved' && $subscription)
-                        <li class="list-group-item">
-                            <strong>Jenis Langganan:</strong> {{ ucfirst($status->subscription_type) }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Tanggal Mulai:</strong>
-                            {{ \Carbon\Carbon::parse($subscription->waktu_beli)->format('d M Y') }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Tanggal Habis:</strong>
-                            {{ \Carbon\Carbon::parse($subscription->waktu_habis)->format('d M Y') }}
-                        </li>
-                    @endif
-                </ul>
+                            <ul class="list-group mt-2 mb-3">
+                                <li class="list-group-item">
+                                    <strong>Status Pembayaran:</strong>
+                                    @if ($status->payment_status === 'pending')
+                                        <span class="badge-status badge-pending">Pending</span>
+                                    @elseif ($status->payment_status === 'approved')
+                                        <span class="badge-status badge-approved">Approved</span>
+                                    @else
+                                        <span class="badge-status badge-rejected">Rejected</span>
+                                    @endif
+                                </li>
 
-                {{-- Tombol download PDF --}}
-                @if ($status->payment_status === 'approved' && $subscription)
-                    <a href="{{ route('invoice.download', ['id' => $status->id]) }}" class="btn btn-success mt-3">
-                        Download Invoice PDF
-                    </a>
+                                @if ($status->payment_status === 'approved' && isset($subscriptionData[$status->id]))
+                                    <li class="list-group-item">
+                                        <strong>Jenis Langganan:</strong> {{ ucfirst($status->subscription_type) }}
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Tanggal Mulai:</strong>
+                                        {{ \Carbon\Carbon::parse($subscriptionData[$status->id]->waktu_beli)->format('d M Y') }}
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Tanggal Habis:</strong>
+                                        {{ \Carbon\Carbon::parse($subscriptionData[$status->id]->waktu_habis)->format('d M Y') }}
+                                    </li>
+                                @endif
+                            </ul>
+
+                            @if ($status->payment_status === 'approved' && isset($subscriptionData[$status->id]))
+                                <button wire:click="kirimInvoice({{ $status->id }})" class="btn btn-success"
+                                    wire:loading.attr="disabled">
+                                    <span wire:loading.remove>Kirim Invoice ke WhatsApp</span>
+                                    <span wire:loading>Kirim...</span>
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+
+                @if (session()->has('message'))
+                    <div class="alert alert-success mt-3">
+                        {{ session('message') }}
+                    </div>
                 @endif
+
+                @error('error')
+                    <div class="alert alert-danger mt-3">
+                        {{ $message }}
+                    </div>
+                @enderror
             @endif
         @endif
     </div>
