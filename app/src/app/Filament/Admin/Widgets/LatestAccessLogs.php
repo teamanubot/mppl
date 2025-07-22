@@ -2,19 +2,20 @@
 
 namespace App\Filament\Admin\Widgets;
 
-use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Activity;
+use Filament\Widgets\TableWidget as BaseWidget;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class LatestAccessLogs extends BaseWidget
 {
     use HasWidgetShield;
-    protected static ?int $sort = 100;
 
+    protected static ?string $heading = 'Aktivitas Terbaru';
+    protected static ?int $sort = 100;
     protected int|string|array $columnSpan = 2;
 
     protected static function getLogNameColors(): array
@@ -47,43 +48,46 @@ class LatestAccessLogs extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(
-                Activity::query()->latest()->take(5)
-            )
+            ->query(Activity::query()->latest()->take(5))
             ->columns([
                 Tables\Columns\TextColumn::make('log_name')
                     ->badge()
-                    ->colors(static::getLogNameColors())
-                    ->label(__('filament-logger::filament-logger.resource.label.type'))
+                    ->colors(self::getLogNameColors())
                     ->formatStateUsing(fn ($state) => ucwords($state))
+                    ->label(__('Tipe'))
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('event')
-                    ->label(__('filament-logger::filament-logger.resource.label.event'))
+                    ->label(__('Event'))
+                    ->color('primary')
+                    ->weight('medium')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('description')
-                    ->label(__('filament-logger::filament-logger.resource.label.description'))
-                    ->wrap(),
+                    ->label(__('Deskripsi'))
+                    ->wrap()
+                    ->limit(60)
+                    ->tooltip(fn ($state) => $state),
 
                 Tables\Columns\TextColumn::make('subject_type')
-                    ->label(__('filament-logger::filament-logger.resource.label.subject'))
+                    ->label(__('Entitas'))
                     ->formatStateUsing(function ($state, Model $record) {
-                        /** @var Activity $record */
-                        if (! $state) {
-                            return '-';
-                        }
+                        if (! $state) return '-';
 
-                        return Str::of($state)->afterLast('\\')->headline() . ' # ' . $record->subject_id;
+                        return Str::of($state)->afterLast('\\')->headline() . ' #' . $record->subject_id;
                     }),
 
                 Tables\Columns\TextColumn::make('causer.name')
-                    ->label(__('filament-logger::filament-logger.resource.label.user')),
+                    ->label(__('Pengguna'))
+                    ->color('gray'),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('filament-logger::filament-logger.resource.label.logged_at'))
-                    ->dateTime(config('d/m/Y H:i A'))
-                    ->sortable(),
+                    ->label(__('Waktu'))
+                    ->since() // tampilkan waktu relatif: "5 minutes ago"
+                    ->sortable()
+                    ->tooltip(fn ($record) => $record->created_at->format('d M Y, H:i')),
             ])
+            ->striped() // tampilkan warna baris selang-seling agar lebih rapi
             ->paginated(false);
     }
 }

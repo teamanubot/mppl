@@ -1403,6 +1403,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'pxlrbt/filament-excel' => array(
+            'pretty_version' => 'v2.4.3',
+            'version' => '2.4.3.0',
+            'reference' => '3425500cfede8a9334a6a79f001b5a36a117ca6f',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../pxlrbt/filament-excel',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'ralouphie/getallheaders' => array(
             'pretty_version' => '3.0.3',
             'version' => '3.0.3.0',

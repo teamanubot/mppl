@@ -8,7 +8,7 @@ use Filament\Widgets\StatsOverviewWidget\Card;
 
 class StatusSummaryWidget extends BaseWidget
 {
-    protected ?string $heading = 'Ringkasan Status Pembayaran';
+    protected ?string $heading = '📊 Ringkasan Status Pembayaran';
 
     protected function getCards(): array
     {
@@ -19,11 +19,30 @@ class StatusSummaryWidget extends BaseWidget
         $totalLangganan = Status::count();
 
         return [
-            Card::make('Total Pendapatan', 'Rp ' . number_format($totalPendapatan, 0, ',', '.')),
-            Card::make('Approved', $approvedCount),
-            Card::make('Pending', $pendingCount),
-            Card::make('Rejected', $rejectedCount),
-            Card::make('Total Berlangganan', $totalLangganan),
+            Card::make('Total Pendapatan', 'Rp ' . number_format($totalPendapatan, 0, ',', '.'))
+                ->description('Total dari pembayaran yang disetujui')
+                ->color('success')
+                ->icon('heroicon-o-banknotes'),
+
+            Card::make('Status Disetujui', $approvedCount)
+                ->description('Pembayaran dengan status approved')
+                ->color('success')
+                ->icon('heroicon-o-check-circle'),
+
+            Card::make('Status Menunggu', $pendingCount)
+                ->description('Pembayaran masih diproses')
+                ->color('warning')
+                ->icon('heroicon-o-clock'),
+
+            Card::make('Status Ditolak', $rejectedCount)
+                ->description('Pembayaran gagal/tidak valid')
+                ->color('danger')
+                ->icon('heroicon-o-x-circle'),
+
+            Card::make('Total Langganan', $totalLangganan)
+                ->description('Semua pelanggan aktif')
+                ->color('primary')
+                ->icon('heroicon-o-user-group'),
         ];
     }
 }

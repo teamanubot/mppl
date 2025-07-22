@@ -60,7 +60,12 @@ class DataPenyewaBotResource extends Resource
                 Tables\Columns\TextColumn::make('nama')
                     ->label('Nama Penyewa Bot')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('jenisbot'),
+                Tables\Columns\BadgeColumn::make('jenisbot')
+                    ->color(fn ($state) => match (strtolower($state)) {
+                            'selfbot'       => 'primary',
+                            'official bot'  => 'success',
+                            default         => 'gray',
+                        }),
                 Tables\Columns\TextColumn::make('waktu_beli')
                     ->dateTime()
                     ->sortable(),

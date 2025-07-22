@@ -8,14 +8,14 @@ use Illuminate\Support\Carbon;
 
 class ActiveBotsLineChart extends ChartWidget
 {
-    protected static ?string $heading = 'Jumlah Bot Aktif per Jenis Bot';
-    protected static ?string $maxHeight = '300px';
+    protected static ?string $heading = '📈 Jumlah Bot Aktif per Jenis Bot';
+    protected static ?string $description = 'Real-time statistik bot aktif: Selfbot & Official Bot';
+    protected static ?string $maxHeight = '400px';
 
     protected function getData(): array
     {
         $now = Carbon::now();
 
-        // Hitung jumlah bot aktif per jenis
         $selfbotCount = DataPenyewaBot::where('jenisbot', 'selfbot')
             ->where('waktu_beli', '<=', $now)
             ->where('waktu_habis', '>=', $now)
@@ -32,10 +32,16 @@ class ActiveBotsLineChart extends ChartWidget
                 [
                     'label' => 'Bot Aktif',
                     'data' => [$selfbotCount, $officialBotCount],
-                    'fill' => false,
-                    'borderColor' => '#ef4444',
-                    'backgroundColor' => 'rgba(239, 68, 68, 0.4)',
-                    'tension' => 0.3,
+                    'fill' => true,
+                    'backgroundColor' => 'rgba(96, 165, 250, 0.15)', // soft blue
+                    'borderColor' => '#3b82f6', // blue-500
+                    'pointBackgroundColor' => '#1d4ed8', // blue-700
+                    'pointBorderColor' => '#fff',
+                    'pointHoverRadius' => 6,
+                    'pointRadius' => 5,
+                    'pointStyle' => 'circle',
+                    'tension' => 0.5,
+                    'borderWidth' => 3,
                 ],
             ],
         ];

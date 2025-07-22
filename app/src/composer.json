@@ -23,6 +23,7 @@
         "maatwebsite/excel": "^3.1",
         "midtrans/midtrans-php": "^2.6",
         "njxqlus/filament-progressbar": "*",
+        "pxlrbt/filament-excel": "^2.4",
         "z3d0x/filament-logger": "^0.8.0"
     },
     "require-dev": {

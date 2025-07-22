@@ -2,45 +2,52 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\ProductResource\Pages;
-use App\Filament\Admin\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\Resource;
+use App\Filament\Admin\Resources\ProductResource\Pages;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationLabel = 'Jenis Bot';
-
     protected static ?string $navigationGroup = 'Produk';
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nama Jenis Bot')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('description')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+
+                Forms\Components\Textarea::make('description')
+                    ->label('Deskripsi')
+                    ->rows(2)
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+
                 Forms\Components\TextInput::make('price')
+                    ->label('Harga')
                     ->required()
                     ->numeric()
                     ->prefix('Rp ')
                     ->rule('numeric'),
+
                 Forms\Components\TextInput::make('order')
-                    ->required()
+                    ->label('Order')
                     ->numeric()
                     ->default(0),
-            ]);
+            ])
+            ->columns(2);
     }
 
     public static function table(Table $table): Table
@@ -48,42 +55,49 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->label('Jenis Bot')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('medium'),
+
                 Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
+                    ->label('Deskripsi')
+                    ->limit(60)
+                    ->wrap()
+                    ->tooltip(fn ($state) => $state),
+
                 Tables\Columns\TextColumn::make('price')
+                    ->label('Harga')
                     ->sortable()
-                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 2, ',', '.')),
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+
                 Tables\Columns\TextColumn::make('order')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Order')
+                    ->sortable()
+                    ->alignCenter(),
+
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat')
+                    ->dateTime('d M Y, H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Terakhir Diperbarui')
+                    ->dateTime('d M Y, H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->label('Edit'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->label('Hapus Terpilih'),
                 ]),
-            ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+            ])
+            ->defaultSort('order');
     }
 
     public static function getPages(): array
@@ -93,5 +107,10 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [];
     }
 }
